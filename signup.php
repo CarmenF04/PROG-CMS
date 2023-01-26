@@ -44,10 +44,10 @@ session_start();
 
     <form method="post">
         <label>New User Name</label>
-        <input type="text" name="user_name"><br><br>
+        <input type="text" name="user_name" placeholder="voornaam en achternaam"><br><br>
 
         <label>New Password</label>
-        <input type="password" name="password"><br><br>
+        <input type="password" name="password" placeholder="wachtwoord"><br><br>
 
         <input class="submit__button" type="submit" value="SIGN UP"><br><br>
 
