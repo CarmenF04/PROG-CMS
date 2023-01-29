@@ -1,31 +1,31 @@
 <?php
 
-session_start();
+session_start(); // Slaat info op van de gebruiker op de website
 
-    include("connection.php");
+    include("connection.php"); // Haalt bestanden op
     include("functions.php");
 
-    if($_SERVER['REQUEST_METHOD'] == "POST")
+    if($_SERVER['REQUEST_METHOD'] == "POST") // Haalt info op van de gebruiker onderwater post = dat je niet wilt dat persoonlijke gegevens gedeeld worden in de url
     {
         //er is iets ingevuld
-       $user_name = $_POST['user_name'];
+       $user_name = $_POST['user_name']; // Haal je op uit het formulier
        $password =  $_POST['password'];
 
-       if(!empty($user_name) && !empty($password) && !is_numeric($user_name))
+       if(!empty($user_name) && !empty($password) && !is_numeric($user_name)) // wanneer het niet leeg is
        {
-            //opgeslagen in de database
-            $user_id = random_num(20);
-            $query = "select * from users where user_name = '$user_name' limit 1";
-            $result = mysqli_query($con, $query);
+            // opgeslagen in de database
+            $user_id = random_num(20); 
+            $query = "select * from users where user_name = '$user_name' limit 1"; //je wilt alle usernames pakken van de tabel user
+            $result = mysqli_query($con, $query); // resultaat van de database en de query die je gebruikt
 
 
         if($result)
         {
-            if($result && mysqli_num_rows($result) > 0)
+            if($result && mysqli_num_rows($result) > 0) 
             {
-                $user_data = mysqli_fetch_assoc($result);
+                $user_data = mysqli_fetch_assoc($result); // Wanneer het groter is dan 0 haal je de gegevens op
                 
-                if($user_data['password'] === $password)
+                if($user_data['password'] === $password) // Wanneer het wachtwoord in de database identiek is aan het wachtwoord dat de gebruiker invoerd dan
                 {
 
                     $_SESSION['user_id'] = $user_data['user_id'];
