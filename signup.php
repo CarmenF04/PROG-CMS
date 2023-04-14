@@ -1,28 +1,39 @@
+<!-- OOP -->
+
+
 <?php
 session_start();
 
-    include("connection.php");
-    include("functions.php");
+include("connection.php");
+include("functions.php");
 
-    if($_SERVER['REQUEST_METHOD'] == "POST")
-    {
-        //er is iets ingevuld
-       $user_name = $_POST['user_name'];
-       $password =  $_POST['password'];
+class RegistrationHandler {
+    private $con;
 
-       if(!empty($user_name) && !empty($password) && !is_numeric($user_name))
-       {
-            //opgeslagen in de database
-            $user_id = random_num(20);
-            $query = "insert into users (user_id, user_name, password) values ('$user_id', '$user_name', '$password')";
-
-            mysqli_query($con, $query);
-
-            header("Location: login.php");
-       }
+    public function __construct($con) {
+        $this->con = $con;
     }
 
+    public function handleRegistration() {
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user_name = $_POST['user_name'];
+            $password = $_POST['password'];
+
+            if (!empty($user_name) && !empty($password) && !is_numeric($user_name)) {
+                $user_id = random_num(20);
+                $query = "INSERT INTO users (user_id, user_name, password) VALUES ('$user_id', '$user_name', '$password')";
+                mysqli_query($this->con, $query);
+                header("Location: login.php");
+                die;
+            }
+        }
+    }
+}
+
+$registrationHandler = new RegistrationHandler($con);
+$registrationHandler->handleRegistration();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -1,47 +1,52 @@
+<!-- OOP -->
+
 <?php
+session_start();
 
-session_start(); // Slaat info op van de gebruiker op de website
+include("connection.php");
+include("functions.php");
 
-    include("connection.php"); // Haalt bestanden op
-    include("functions.php");
+class LoginHandler {
+    private $con;
 
-    if($_SERVER['REQUEST_METHOD'] == "POST") // Haalt info op van de gebruiker onderwater post = dat je niet wilt dat persoonlijke gegevens gedeeld worden in de url
-    {
-        //er is iets ingevuld
-       $user_name = $_POST['user_name']; // Haal je op uit het formulier
-       $password =  $_POST['password'];
-
-       if(!empty($user_name) && !empty($password) && !is_numeric($user_name)) // wanneer het niet leeg is
-       {
-            // opgeslagen in de database
-            $user_id = random_num(20); 
-            $query = "select * from users where user_name = '$user_name' limit 1"; //je wilt alle usernames pakken van de tabel user
-            $result = mysqli_query($con, $query); // resultaat van de database en de query die je gebruikt
-
-
-        if($result)
-        {
-            if($result && mysqli_num_rows($result) > 0) 
-            {
-                $user_data = mysqli_fetch_assoc($result); // Wanneer het groter is dan 0 haal je de gegevens op
-                
-                if($user_data['password'] === $password) // Wanneer het wachtwoord in de database identiek is aan het wachtwoord dat de gebruiker invoerd dan
-                {
-
-                    $_SESSION['user_id'] = $user_data['user_id'];
-                    header("Location: bedankt.php");
-                    die;
-            }
-        }
-    }    
-            echo "wrong username or password!";
-       }else
-       {
-            echo "wrong username or password!";
-       }
+    public function __construct($con) {
+        $this->con = $con;
     }
 
+    public function handleLogin() {
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user_name = $_POST['user_name'];
+            $password = $_POST['password'];
+
+            if (!empty($user_name) && !empty($password) && !is_numeric($user_name)) {
+                $user_id = random_num(20);
+                $query = "SELECT * FROM users WHERE user_name = '$user_name' LIMIT 1";
+                $result = mysqli_query($this->con, $query);
+
+                if ($result) {
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        $user_data = mysqli_fetch_assoc($result);
+
+                        if ($user_data['password'] === $password) {
+                            $_SESSION['user_id'] = $user_data['user_id'];
+                            header("Location: bedankt.php");
+                            die;
+                        }
+                    }
+                }
+
+                echo "wrong username or password!";
+            } else {
+                echo "wrong username or password!";
+            }
+        }
+    }
+}
+
+$loginHandler = new LoginHandler($con);
+$loginHandler->handleLogin();
 ?>
+
 
 
 <!DOCTYPE html>
